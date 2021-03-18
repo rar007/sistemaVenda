@@ -1,45 +1,43 @@
 <?php
-    $dbConfig = array(
-        'host' => "localhost",
-        'user' => "userVenda",
-        'pass' => "sen1234",
-        'database' => "sistemaVenda"
-    );
+    $dbConfig = array();
+    $dbConfig['host'] = 'localhost';
+    $dbConfig['user'] = 'userVenda';
+    $dbConfig['pass'] = 'sen1234';
+    $dbConfig['base'] = 'sistemaVenda';
     
     $nome = '';
     $sigla = '';
 
     if(isset($_POST["salvar"]))
     {
-        echo $_POST["nome-unidade"];
-        
-        echo $nome;
-        $nome = $_POST["nome-unidade"];
-        $sigla = $_POST["sigla"];
-
-        echo $nome;
+        $nome = mysqli_escape_string($conn, $_POST['nome-unidade']);
+        $sigla = $_POST['sigla'];
     
-        $conn = mysqli_connect("localhost", "userVenda", "sen1234", "sistemaVenda");
-        print_r($dbConfig);
-        exit();
+        $conn = mysqli_connect(
+            $dbConfig['host'], 
+            $dbConfig['user'], 
+            $dbConfig['pass'], 
+            $dbConfig['base']
+        );
+
         if(mysqli_connect_errno() != 0)
         {
             echo "<p>Não foi possivel se conectar ao banco de dados</p>";
         }
         else
         {
-            echo "entrei na verificacao de conexao\n";
+            
             $sql = "INSERT INTO unidade(descricao, sigla) VALUES ('{$nome}', '{$sigla}')";
-            echo "montei a query" . $sql . "\n";
-           /*  if(mysqli_query($conn, $sql))
+            
+            if(mysqli_query($conn, $sql))
             {
-                echo "Unidade Salva com sucesso";
+                echo "<p>Unidade Salva com sucesso</p>";
             }
             else
             {
-                echo "Nao foi possivel salvar os dados";
-            } */
-
+                echo "<p>Nao foi possivel salvar os dados</p>";
+            }
+            mysqli_close($conn);
         }
     }
 

@@ -1,11 +1,9 @@
 <?php
-    $dbConfig = array(
-        'host' => 'localhost',
-        'user' => 'userVenda',
-        'pass' => 'sen1234',
-        'database' => 'sistemaVenda'
-    );
-    $conn = mysqli_connect($dbConfig['host'], ['user'], ['pass'], ['database']);
+    $dbConfig = array();
+    $dbConfig['host'] = 'localhost';
+    $dbConfig['user'] = 'userVenda';
+    $dbConfig['pass'] = 'sen1234';
+    $dbConfig['base'] = 'sistemaVenda';
 
     $nome = '';
     $preco = 0.0;
@@ -14,7 +12,15 @@
 
     if(isset($_POST['salvar']))
     {
-        $nome = preg_replace('ˆ/[a-zA-Z0-9]\s\s+/', '', $_POST['nome']);
+        $conn = mysqli_connect(
+            $dbConfig['host'], 
+            $dbConfig['user'], 
+            $dbConfig['pass'], 
+            $dbConfig['base']
+        );
+
+        
+        $nome = mysqli_escape_string($conn, $_POST['nome']);
         $preco = (float) $_POST['preco'];
         $qtde = (int) $_POST['qtde'];
 
@@ -66,7 +72,7 @@
         </table> 
         
         <br>
-        <input type="submit" name="salvar" value="Salvar">
+        <input type="submit" name="salvar" value="Salvar" id="salvar">
         <input type="button" name="cancelar" value="Cancelar">
     </form>
     <br>
