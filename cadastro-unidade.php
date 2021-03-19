@@ -10,16 +10,16 @@
 
     if(isset($_POST["salvar"]))
     {
-        $nome = mysqli_escape_string($conn, $_POST['nome-unidade']);
-        $sigla = $_POST['sigla'];
-    
         $conn = mysqli_connect(
             $dbConfig['host'], 
             $dbConfig['user'], 
             $dbConfig['pass'], 
             $dbConfig['base']
         );
-
+        
+        $nome = mysqli_escape_string($conn, $_POST['nome-unidade']);
+        $sigla = $_POST['sigla'];
+    
         if(mysqli_connect_errno() != 0)
         {
             echo "<p>Não foi possivel se conectar ao banco de dados</p>";

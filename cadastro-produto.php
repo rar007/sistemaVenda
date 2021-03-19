@@ -18,12 +18,29 @@
             $dbConfig['pass'], 
             $dbConfig['base']
         );
-
-        
         $nome = mysqli_escape_string($conn, $_POST['nome']);
         $preco = (float) $_POST['preco'];
-        $qtde = (int) $_POST['qtde'];
+        $qtde = (int) $_POST['quantidade'];
+        $unidade = (int)$_POST['unidade'];
 
+        if(mysqli_connect_errno() != 0)
+        {
+            echo "<p>Não foi possivel se conectar ao banco de dados</p>";
+        }
+        else
+        {
+            $sql = "INSERT INTO produto(descricao, preco, qtde, unidade_id) VALUES ('{$nome}', {$preco}, {$qtde}, {$unidade})";
+            
+            if(mysqli_query($conn, $sql))
+            {
+                echo "<p>Unidade Salva com sucesso</p>";
+            }
+            else
+            {
+                echo "<p>Nao foi possivel salvar os dados</p>";
+            }
+            mysqli_close($conn);
+        }
     }
 ?>
 
@@ -44,7 +61,7 @@
                     <label for="nome-do-produto">Nome do produto: </label>
                 </td>
                 <td>
-                    <input type="text" name="nome" id="nome"/>
+                    <input type="text" name="nome" id="nome" maxlength="50"/>
                 </td>
             </tr>
             <tr>
@@ -58,19 +75,32 @@
             <tr>
                 <td><label for="Unidade">Unidade de compra: </label></td>
                 <td>
-                    <select name="unidade" id="unidade">
+                    
                         <?php
-                            echo "<option id = >kg</option>";
+                            $sql = "SELECT id, sigla FROM unidade";
+                            $conn = mysqli_connect(
+                                $dbConfig['host'], 
+                                $dbConfig['user'], 
+                                $dbConfig['pass'], 
+                                $dbConfig['base']
+                            );
+                            if($res = mysqli_query($conn, $sql))
+                            {
+                                
+                                    echo "<select name='unidade' id='unidade'>";
+                                    while($registro = mysqli_fetch_assoc($res))
+                                    {
+                                        echo "<option value={$registro['id']}>{$registro['sigla']}</option>";
+                                    }
+                            }
+                            mysqli_close($conn);
+                            
                         ?>
                     </select>
                 </td>
             </tr>
-                
-                
-                
             </tr>
         </table> 
-        
         <br>
         <input type="submit" name="salvar" value="Salvar" id="salvar">
         <input type="button" name="cancelar" value="Cancelar">
@@ -78,6 +108,6 @@
     <br>
     <br>
     <br>
-    <footer style="text-alignt='center';">&copy; 2021 Todos os direitos reservados</footer>
+    <footer>&copy; 2021 Todos os direitos reservados</footer>
 </body>
 </html>
